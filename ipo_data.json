@@ -1,0 +1,98 @@
+[
+  {
+    "id": "IPO12345",
+    "status": "open",
+    "slug": "tech-company-ipo1",
+    "infoUrl": "https://example.com/ipo/tech-company",
+    "name": "Tech Company Inc.",
+    "companyDescription": "Tech Company Inc. is a leading innovator in the software industry, providing cloud-based solutions to businesses worldwide.",
+    "symbol": "TCI",
+    "type": "Mainboard",
+    "startDate": "2024-09-26T00:00:00Z",
+    "endDate": "2024-10-01T00:00:00Z",
+    "isDateFinal": true,
+    "listingDate": "2024-10-10T00:00:00Z",
+    "priceRange": {
+      "min": 500.0,
+      "max": 550.0
+    },
+    "minQty": 100,
+    "sizePerLot": 10,
+    "logo": "https://example.com/ipo/tech-company/logo.png",
+    "issueSize": "₹1000 Crores",
+    "prospectusUrl": "https://example.com/ipo/tech-company/prospectus.pdf",
+    "schedule": [
+      {
+        "event": "issue_open",
+        "date": "2024-09-26T00:00:00Z",
+        "eventTitle": "IPO Open for Subscription"
+      },
+      {
+        "event": "listing_date",
+        "date": "2024-10-10T00:00:00Z",
+        "eventTitle": "IPO Listing Date"
+      }
+    ],
+    "gmpDetails": {
+      "gmpTimeline": [
+        {
+          "event": "gmp_update",
+          "date": "2024-09-27T00:00:00Z"
+        }
+      ],
+      "latestGmpPrice": 100.0,
+      "isGmpActivated": true
+    },
+    "applyRecommendation": null,
+    "lastUpdatedAt": "2024-09-25T00:00:00Z",
+    "createdAt": "2024-09-20T00:00:00Z"
+  },
+  {
+    "id": "IPO12345",
+    "status": "open",
+    "slug": "tech-company-ipo",
+    "infoUrl": "https://example.com/ipo/tech-company",
+    "name": "Tech Company Inc.",
+    "companyDescription": "Tech Company Inc. is a leading innovator in the software industry, providing cloud-based solutions to businesses worldwide.",
+    "symbol": "TCI",
+    "type": "Mainboard",
+    "startDate": "2024-09-26T00:00:00Z",
+    "endDate": "2024-10-01T00:00:00Z",
+    "isDateFinal": true,
+    "listingDate": "2024-10-10T00:00:00Z",
+    "priceRange": {
+      "min": 500.0,
+      "max": 550.0
+    },
+    "minQty": 100,
+    "sizePerLot": 10,
+    "logo": "https://example.com/ipo/tech-company/logo.png",
+    "issueSize": "₹1000 Crores",
+    "prospectusUrl": "https://example.com/ipo/tech-company/prospectus.pdf",
+    "schedule": [
+      {
+        "event": "issue_open",
+        "date": "2024-09-26T00:00:00Z",
+        "eventTitle": "IPO Open for Subscription"
+      },
+      {
+        "event": "listing_date",
+        "date": "2024-10-10T00:00:00Z",
+        "eventTitle": "IPO Listing Date"
+      }
+    ],
+    "gmpDetails": {
+      "gmpTimeline": [
+        {
+          "event": "gmp_update",
+          "date": "2024-09-27T00:00:00Z"
+        }
+      ],
+      "latestGmpPrice": 100.0,
+      "isGmpActivated": true
+    },
+    "applyRecommendation": null,
+    "lastUpdatedAt": "2024-09-25T00:00:00Z",
+    "createdAt": "2024-09-20T00:00:00Z"
+  }
+]

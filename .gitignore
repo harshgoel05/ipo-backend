@@ -1,0 +1,10 @@
+tmp
+bin
+
+*.iml
+*.ipr
+*.iws
+.idea/
+/build/
+/dist/
+/out/
