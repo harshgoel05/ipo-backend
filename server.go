@@ -10,8 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func readIpoJson() []IPODetail {
-	var ipoDetails []IPODetail
+func readIpoJson() []DMIPO {
+	var ipoList []DMIPO
 	jsonFile, err := os.Open("ipo_data.json")
 	if err != nil {
 		log.Fatalf("Failed to open file: %s", err)
@@ -20,10 +20,10 @@ func readIpoJson() []IPODetail {
 
 	byteValue, _ := io.ReadAll(jsonFile)
 
-	if err := json.Unmarshal(byteValue, &ipoDetails); err != nil {
+	if err := json.Unmarshal(byteValue, &ipoList); err != nil {
 		log.Fatalf("Error unmarshaling JSON: %s", err)
 	}
-	return ipoDetails
+	return ipoList
 
 }
 
@@ -34,7 +34,7 @@ func getIpoCalendar(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, ipoDetails)
 }
 
-func findIpoBySlug(ipoDetails []IPODetail, slug string) (*IPODetail, bool) {
+func findIpoBySlug(ipoDetails []DMIPO, slug string) (*DMIPO, bool) {
 	for _, ipoDetail := range ipoDetails {
 		if ipoDetail.Slug == slug {
 			return &ipoDetail, true
@@ -45,11 +45,11 @@ func findIpoBySlug(ipoDetails []IPODetail, slug string) (*IPODetail, bool) {
 
 func getIpoDetails(c *gin.Context) {
 	slug := c.Param("slug")
-	ipoDetail, found := findIpoBySlug(readIpoJson(), slug)
+	ipoList, found := findIpoBySlug(readIpoJson(), slug)
 	if !found {
 		c.JSON(http.StatusNotFound, gin.H{"error": "IPO not found"})
 	} else {
-		c.IndentedJSON(http.StatusOK, ipoDetail)
+		c.IndentedJSON(http.StatusOK, ipoList)
 	}
 }
 

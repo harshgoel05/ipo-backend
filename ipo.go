@@ -28,7 +28,7 @@ type IPODetail struct {
 	Slug                string     `json:"slug"`                // URL-friendly identifier
 	InfoURL             string     `json:"infoUrl"`             // Link to more information about the IPO
 	Name                string     `json:"name"`                // Name of the company issuing the IPO
-	CompanyDescription  string     `json:"companyDescription"`  // Description of the company
+	CompanyDescription  string     `json:"about"`  // Description of the company
 	Symbol              string     `json:"symbol"`              // Stock symbol
 	Type                string     `json:"type"`                // Type of IPO (e.g., SME)
 	StartDate           time.Time  `json:"startDate"`           // Date when the IPO starts
