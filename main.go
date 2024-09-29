@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -8,7 +9,11 @@ import (
 func main() {
 
 	godotenv.Load()
+
 	router := gin.Default()
+
+	router.Use(cors.Default())
+
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "Welcome to the IPO service!",
