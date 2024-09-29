@@ -95,20 +95,44 @@ func FetchIPOWithDetails(collection *mongo.Collection) ([]AMIPOIndividual, error
 	pipeline := mongo.Pipeline{
 		{
 			{Key: "$lookup", Value: bson.D{
-				{Key: "from", Value: "ipo_details"},
-				{Key: "localField", Value: "slug"},
-				{Key: "foreignField", Value: "slug"},
-				{Key: "as", Value: "details"},
+				{"from", "ipo_details"},
+				{"localField", "slug"},
+				{"foreignField", "slug"},
+				{Key: "pipeline", Value: bson.A{
+					bson.D{
+						{"$project", bson.D{
+							{"_id", 0},
+							{"details", 1},
+							{"gmptimeline", 1},
+						}},
+					},
+				}},
+				{"as", "ipo_details"},
 			}},
 		},
+		// $addFields to handle no match case
 		{
-			{Key: "$unwind", Value: "$details"}, // Deconstruct array into a single object
-		},
-		{
-			{Key: "$match", Value: bson.D{
-				{Key: "details", Value: bson.D{
-					{Key: "$ne", Value: bson.A{}}, // Optional
+			{"$addFields", bson.D{
+				{"ipo_details", bson.D{
+					{"$cond", bson.A{
+						bson.D{{"$eq", bson.A{"$ipo_details", bson.A{}}}},
+						nil,
+						bson.D{{"$arrayElemAt", bson.A{"$ipo_details", 0}}}, // In case there is a match, take the first element
+					}},
 				}},
+			}},
+		},
+		// $addFields stage for details and gmpTimeline
+		{
+			{Key: "$addFields", Value: bson.D{
+				{"details", "$ipo_details.details"},
+				{"gmpTimeline", "$ipo_details.gmptimeline"},
+			}},
+		},
+		// $project stage to remove ipo_details
+		{
+			{"$project", bson.D{
+				{"ipo_details", 0},
 			}},
 		},
 	}

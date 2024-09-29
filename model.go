@@ -16,29 +16,29 @@ type DMIPO struct {
 }
 
 type AMIPOIndividual struct {
-	StartDate   time.Time      `json:"startDate"`   // Date when the IPO starts
-	GmpUrl      string         `json:"gmpUrl"`      // URL for grey market premium details
-	Link        string         `json:"link"`        // Link to more information about the IPO
-	EndDate     time.Time      `json:"endDate"`     // Date when the IPO ends
-	LogoUrl     string         `json:"logoUrl"`     // URL to the logo image of the company
-	ListingDate time.Time      `json:"listingDate"` // Date when the IPO will be listed on the stock exchange
-	PriceRange  DMPriceRange   `json:"priceRange"`  // Price range for the IPO shares
-	Symbol      string         `json:"symbol"`      // Stock symbol
-	Name        string         `json:"name"`        // Name of the company issuing the IPO
-	Slug        string         `json:"slug"`        // URL-friendly identifier
-	Details     DMIPODetail    `json:"details"`     // Detailed information about the IPO
-	GmpTimeline []DMGmpDetails `json:"gmpTimeline"` // Grey market premium timeline
+	StartDate   time.Time       `json:"startDate"`   // Date when the IPO starts
+	GmpUrl      string          `json:"gmpUrl"`      // URL for grey market premium details
+	Link        string          `json:"link"`        // Link to more information about the IPO
+	EndDate     time.Time       `json:"endDate"`     // Date when the IPO ends
+	LogoUrl     string          `json:"logoUrl"`     // URL to the logo image of the company
+	ListingDate time.Time       `json:"listingDate"` // Date when the IPO will be listed on the stock exchange
+	PriceRange  DMPriceRange    `json:"priceRange"`  // Price range for the IPO shares
+	Symbol      string          `json:"symbol"`      // Stock symbol
+	Name        string          `json:"name"`        // Name of the company issuing the IPO
+	Slug        string          `json:"slug"`        // URL-friendly identifier
+	Details     *DMIPODetail    `json:"details"`     // Detailed information about the IPO
+	GmpTimeline *[]DMGmpDetails `json:"gmpTimeline"` // Grey market premium timeline
 }
 
 type SMIPOIndividual struct {
-	Slug        string         `json:"slug"`        // URL-friendly identifier
-	Details     DMIPODetail    `json:"details"`     // Detailed information about the IPO
-	GmpTimeline []DMGmpDetails `json:"gmpTimeline"` // Grey market premium timeline
+	Slug        string          `json:"slug"`        // URL-friendly identifier
+	Details     *DMIPODetail    `json:"details"`     // Detailed information about the IPO
+	GmpTimeline *[]DMGmpDetails `json:"gmpTimeline"` // Grey market premium timeline
 }
 
 type DMIPOIndividual struct {
-	Details     DMIPODetail    `json:"details"`     // Detailed information about the IPO
-	GmpTimeline []DMGmpDetails `json:"gmpTimeline"` // Grey market premium timeline
+	Details     *DMIPODetail    `json:"details"`     // Detailed information about the IPO
+	GmpTimeline *[]DMGmpDetails `json:"gmpTimeline"` // Grey market premium timeline
 }
 
 type DMIPODetail struct {

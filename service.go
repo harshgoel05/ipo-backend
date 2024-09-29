@@ -131,6 +131,7 @@ func mapIpoBasicInfoToDetailedInfoBySlug(ipoList []DMIPO, ipoDetails []SMIPOIndi
 	for _, ipo := range ipoList {
 		for _, ipoDetail := range ipoDetails {
 			if ipo.Slug == ipoDetail.Slug {
+
 				temp := AMIPOIndividual{
 					StartDate:   ipo.StartDate,
 					GmpUrl:      ipo.GmpUrl,
