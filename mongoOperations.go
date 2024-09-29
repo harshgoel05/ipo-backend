@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -60,4 +61,68 @@ func updateOrInsertIPOCalendar(docs interface{}) []mongo.WriteModel {
 	}
 
 	return operations
+}
+
+func ReadAllDocuments(collection *mongo.Collection) ([]DMIPO, error) {
+	var results []DMIPO
+
+	// Find all documents in the collection
+	cursor, err := collection.Find(context.TODO(), bson.D{{}})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	// Iterate through the cursor and decode each document into results
+	for cursor.Next(context.TODO()) {
+		var doc DMIPO
+		if err := cursor.Decode(&doc); err != nil {
+			return nil, err
+		}
+		results = append(results, doc)
+	}
+
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
+// FetchIPOWithDetails performs an optimized aggregation using $lookup
+func FetchIPOWithDetails(collection *mongo.Collection) ([]AMIPOIndividual, error) {
+	// MongoDB aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "ipo_details"},
+				{Key: "localField", Value: "slug"},
+				{Key: "foreignField", Value: "slug"},
+				{Key: "as", Value: "details"},
+			}},
+		},
+		{
+			{Key: "$unwind", Value: "$details"}, // Deconstruct array into a single object
+		},
+		{
+			{Key: "$match", Value: bson.D{
+				{Key: "details", Value: bson.D{
+					{Key: "$ne", Value: bson.A{}}, // Optional
+				}},
+			}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var results []AMIPOIndividual
+	if err := cursor.All(context.TODO(), &results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
 }
