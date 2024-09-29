@@ -9,3 +9,4 @@ bin
 /dist/
 /out/
 .env
+out

@@ -20,5 +20,5 @@ func main() {
 		ctx.IndentedJSON(200, ipoDetails)
 	})
 	// router.GET("/details/:slug", getIpoDetails)
-	router.Run("localhost:8080")
+	router.Run()
 }
