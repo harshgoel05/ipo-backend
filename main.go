@@ -30,6 +30,12 @@ func main() {
 		ctx.IndentedJSON(200, ipoDetails)
 	})
 
+	router.GET("/update/individual-gmp-and-details/:slug", func(ctx *gin.Context) {
+		slug := ctx.Param("slug")
+		ipoDetails := updateGmpAndDetailsForAllIposIndividual(slug)
+		ctx.IndentedJSON(200, ipoDetails)
+	})
+
 	router.GET("/calendar", func(ctx *gin.Context) {
 		ipoDetails := fetchCalendarFromDatabase()
 		ctx.IndentedJSON(200, ipoDetails)

@@ -2,102 +2,25 @@ package main
 
 import (
 	"context"
-	"encoding/json"
-	"io"
 	"log"
-	"net/http"
 	"time"
 )
-
-func getIpoCalendarFromCrawl() []DMIPO {
-	url := BASE_URL + CALENDAR_API
-
-	// Send GET request
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatalf("Failed to send request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check if the response status is OK
-	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Request failed with status: %s", resp.Status)
-	}
-
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
-	}
-
-	// Unmarshal the response body into the Event struct
-	var ipoList []DMIPO
-	err = json.Unmarshal(body, &ipoList)
-	if err != nil {
-		log.Fatalf("Failed to unmarshal JSON: %v", err)
-	}
-
-	return ipoList
-}
 
 func fetchIpoDetailsAndInsertInDb(ipoList []DMIPO) []SMIPOIndividual {
 	var ipoDetailsFinal []SMIPOIndividual
 	for _, ipo := range ipoList {
-		ipoDetails := fetchIndividualIpoDetails(ipo.Link, *ipo.GmpUrl)
+		ipoDetails := fetchIndividualIpoDetails(ipo.Link, ipo.GmpUrl)
 		ipoDetailsResponse := SMIPOIndividual{
 			Slug:        ipo.Slug,
 			Details:     ipoDetails.Details,
 			GmpTimeline: ipoDetails.GmpTimeline,
 		}
-		ipoDetailsFinal = append(ipoDetailsFinal, ipoDetailsResponse)
 		// Insert in database
-		collection := getCollection("ipo_details")
-		// Execute bulk write
-		result, err := collection.InsertOne(
-			context.TODO(),
-			ipoDetailsResponse,
-		)
-		if err != nil {
-			log.Fatalf("Bulk write failed: %v", err)
-		}
-		log.Printf("Bulk write result: %v", result)
+		insertIpoDetailsInDatabase(ipoDetailsResponse)
+		ipoDetailsFinal = append(ipoDetailsFinal, ipoDetailsResponse)
 		time.Sleep(2 * time.Second)
 	}
 	return ipoDetailsFinal
-}
-
-func fetchIndividualIpoDetails(detailsUrl string, gmpUrl string) DMIPOIndividual {
-	url := BASE_URL + "/details?details_url=" + detailsUrl
-	if gmpUrl != "" {
-		url = url + "&gmp_url=" + gmpUrl
-	}
-
-	// Send GET request
-	resp, err := http.Get(url)
-	if err != nil {
-		log.Fatalf("Failed to send request: %v", err)
-	}
-	defer resp.Body.Close()
-
-	// Check if the response status is OK
-	if resp.StatusCode != http.StatusOK {
-		log.Fatalf("Request failed with status: %s", resp.Status)
-	}
-
-	// Read the response body
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
-	}
-
-	// Unmarshal the response body into the Event struct
-	var ipo DMIPOIndividual
-	err = json.Unmarshal(body, &ipo)
-	if err != nil {
-		log.Fatalf("Failed to unmarshal JSON: %v", err)
-	}
-
-	return ipo
 }
 
 func fetchAndUpdateCalendar() []DMIPO {
@@ -126,50 +49,27 @@ func updateGmpAndDetailsForAllIpos() []AMIPOIndividual {
 	return response
 }
 
+func updateGmpAndDetailsForAllIposIndividual(slug string) []AMIPOIndividual {
+
+	aMIPOIndividual := fetchIpoDetailsFromDatabase(slug)
+	println("aMIPOIndividual", aMIPOIndividual)
+	dmIPO := convertAMIPOIndividualToDMIPO(*aMIPOIndividual)
+	ipoDetailsFinal := fetchIpoDetailsAndInsertInDb([]DMIPO{dmIPO})
+	response := mapIpoBasicInfoToDetailedInfoBySlug([]DMIPO{dmIPO}, ipoDetailsFinal)
+	return response
+}
+
 func mapIpoBasicInfoToDetailedInfoBySlug(ipoList []DMIPO, ipoDetails []SMIPOIndividual) []AMIPOIndividual {
 	var ipoDetailsFinal []AMIPOIndividual
 	for _, ipo := range ipoList {
 		for _, ipoDetail := range ipoDetails {
 			if ipo.Slug == ipoDetail.Slug {
 
-				temp := AMIPOIndividual{
-					StartDate:   ipo.StartDate,
-					GmpUrl:      ipo.GmpUrl,
-					Link:        ipo.Link,
-					EndDate:     ipo.EndDate,
-					LogoUrl:     ipo.LogoUrl,
-					ListingDate: ipo.ListingDate,
-					PriceRange:  ipo.PriceRange,
-					Symbol:      ipo.Symbol,
-					Name:        ipo.Name,
-					Slug:        ipo.Slug,
-					Details:     ipoDetail.Details,
-					GmpTimeline: ipoDetail.GmpTimeline,
-				}
+				temp := mergeDMIPOAndSMIPOIndividualToAMIPOIndividual(ipo, ipoDetail)
 				ipoDetailsFinal = append(ipoDetailsFinal, temp)
 				break
 			}
 		}
 	}
 	return ipoDetailsFinal
-}
-
-func fetchCalendarFromDatabase() []AMIPOIndividual {
-
-	collection := getCollection("ipo_calendar")
-	res, err := FetchIPOWithDetails(collection)
-	if err != nil {
-		log.Fatalf("Failed to fetch documents: %v", err)
-	}
-	return res
-}
-
-func fetchIpoDetailsFromDatabase(slug string) *AMIPOIndividual {
-
-	collection := getCollection("ipo_calendar")
-	res, err := FetchIndividualIPOWithDetails(collection, slug)
-	if err != nil {
-		return nil
-	}
-	return &res
 }
