@@ -163,3 +163,13 @@ func fetchCalendarFromDatabase() []AMIPOIndividual {
 	}
 	return res
 }
+
+func fetchIpoDetailsFromDatabase(slug string) *AMIPOIndividual {
+
+	collection := getCollection("ipo_calendar")
+	res, err := FetchIndividualIPOWithDetails(collection, slug)
+	if err != nil {
+		return nil
+	}
+	return &res
+}

@@ -150,3 +150,71 @@ func FetchIPOWithDetails(collection *mongo.Collection) ([]AMIPOIndividual, error
 
 	return results, nil
 }
+
+func FetchIndividualIPOWithDetails(collection *mongo.Collection, slug string) (AMIPOIndividual, error) {
+	// MongoDB aggregation pipeline
+	pipeline := mongo.Pipeline{
+		{
+			{Key: "$match", Value: bson.D{{Key: "slug", Value: slug}}},
+		},
+		{
+			{Key: "$lookup", Value: bson.D{
+				{Key: "from", Value: "ipo_details"},
+				{Key: "localField", Value: "slug"},
+				{Key: "foreignField", Value: "slug"},
+				{Key: "pipeline", Value: bson.A{
+					bson.D{
+						{Key: "$project", Value: bson.D{
+							{Key: "_id", Value: 0},
+							{Key: "details", Value: 1},
+							{Key: "gmptimeline", Value: 1},
+						}},
+					},
+				}},
+				{Key: "as", Value: "ipo_details"},
+			}},
+		},
+		// $addFields to handle no match case
+		{
+			{Key: "$addFields", Value: bson.D{
+				{Key: "ipo_details", Value: bson.D{
+					{Key: "$cond", Value: bson.A{
+						bson.D{{Key: "$eq", Value: bson.A{"$ipo_details", bson.A{}}}},
+						nil,
+						bson.D{{Key: "$arrayElemAt", Value: bson.A{"$ipo_details", 0}}}, // In case there is a match, take the first element
+					}},
+				}},
+			}},
+		},
+		// $addFields stage for details and gmpTimeline
+		{
+			{Key: "$addFields", Value: bson.D{
+				{Key: "details", Value: "$ipo_details.details"},
+				{Key: "gmpTimeline", Value: "$ipo_details.gmptimeline"},
+			}},
+		},
+		// $project stage to remove ipo_details
+		{
+			{Key: "$project", Value: bson.D{
+				{Key: "ipo_details", Value: 0},
+			}},
+		},
+	}
+
+	cursor, err := collection.Aggregate(context.TODO(), pipeline)
+	if err != nil {
+		return AMIPOIndividual{}, err
+	}
+	defer cursor.Close(context.TODO())
+
+	var result AMIPOIndividual
+	if cursor.Next(context.TODO()) {
+		if err := cursor.Decode(&result); err != nil {
+			return AMIPOIndividual{}, err
+		}
+	} else {
+		return AMIPOIndividual{}, mongo.ErrNoDocuments
+	}
+
+	return result, nil
+}
