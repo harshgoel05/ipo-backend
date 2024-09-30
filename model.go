@@ -3,26 +3,26 @@ package main
 import "time"
 
 type DMIPO struct {
-	StartDate   time.Time    `json:"startDate"`   // Date when the IPO starts
-	GmpUrl      string       `json:"gmpUrl"`      // URL for grey market premium details
-	Link        string       `json:"link"`        // Link to more information about the IPO
-	EndDate     time.Time    `json:"endDate"`     // Date when the IPO ends
-	LogoUrl     string       `json:"logoUrl"`     // URL to the logo image of the company
-	ListingDate time.Time    `json:"listingDate"` // Date when the IPO will be listed on the stock exchange
-	PriceRange  DMPriceRange `json:"priceRange"`  // Price range for the IPO shares
-	Symbol      string       `json:"symbol"`      // Stock symbol
-	Name        string       `json:"name"`        // Name of the company issuing the IPO
-	Slug        string       `json:"slug"`        // URL-friendly identifier
+	StartDate   *time.Time    `json:"startDate"`   // Date when the IPO starts
+	GmpUrl      *string       `json:"gmpUrl"`      // URL for grey market premium details
+	Link        string        `json:"link"`        // Link to more information about the IPO
+	EndDate     *time.Time    `json:"endDate"`     // Date when the IPO ends
+	LogoUrl     string        `json:"logoUrl"`     // URL to the logo image of the company
+	ListingDate *time.Time    `json:"listingDate"` // Date when the IPO will be listed on the stock exchange
+	PriceRange  *DMPriceRange `json:"priceRange"`  // Price range for the IPO shares
+	Symbol      string        `json:"symbol"`      // Stock symbol
+	Name        string        `json:"name"`        // Name of the company issuing the IPO
+	Slug        string        `json:"slug"`        // URL-friendly identifier
 }
 
 type AMIPOIndividual struct {
-	StartDate   time.Time       `json:"startDate"`   // Date when the IPO starts
-	GmpUrl      string          `json:"gmpUrl"`      // URL for grey market premium details
+	StartDate   *time.Time      `json:"startDate"`   // Date when the IPO starts
+	GmpUrl      *string         `json:"gmpUrl"`      // URL for grey market premium details
 	Link        string          `json:"link"`        // Link to more information about the IPO
-	EndDate     time.Time       `json:"endDate"`     // Date when the IPO ends
+	EndDate     *time.Time      `json:"endDate"`     // Date when the IPO ends
 	LogoUrl     string          `json:"logoUrl"`     // URL to the logo image of the company
-	ListingDate time.Time       `json:"listingDate"` // Date when the IPO will be listed on the stock exchange
-	PriceRange  DMPriceRange    `json:"priceRange"`  // Price range for the IPO shares
+	ListingDate *time.Time      `json:"listingDate"` // Date when the IPO will be listed on the stock exchange
+	PriceRange  *DMPriceRange   `json:"priceRange"`  // Price range for the IPO shares
 	Symbol      string          `json:"symbol"`      // Stock symbol
 	Name        string          `json:"name"`        // Name of the company issuing the IPO
 	Slug        string          `json:"slug"`        // URL-friendly identifier
@@ -42,11 +42,11 @@ type DMIPOIndividual struct {
 }
 
 type DMIPODetail struct {
-	IssueSize     string    `json:"issueSize"`      // Total size of the IPO issue
-	SizePerLot    int       `json:"sizePerLot"`     // Number of shares per lot
+	IssueSize     *string   `json:"issueSize"`      // Total size of the IPO issue
+	SizePerLot    *int      `json:"sizePerLot"`     // Number of shares per lot
 	Schedule      []DMEvent `json:"schedule"`       // List of events and their respective dates
 	About         string    `json:"about"`          // Description of the company
-	MinInvestment int       `json:"min_investment"` // Minimum investment required
+	MinInvestment *int      `json:"min_investment"` // Minimum investment required
 	Strengths     []string  `json:"strengths"`      // List of company strengths
 	Risks         []string  `json:"risks"`          // List of company risks
 }

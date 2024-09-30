@@ -95,29 +95,29 @@ func FetchIPOWithDetails(collection *mongo.Collection) ([]AMIPOIndividual, error
 	pipeline := mongo.Pipeline{
 		{
 			{Key: "$lookup", Value: bson.D{
-				{"from", "ipo_details"},
-				{"localField", "slug"},
-				{"foreignField", "slug"},
+				{Key: "from", Value: "ipo_details"},
+				{Key: "localField", Value: "slug"},
+				{Key: "foreignField", Value: "slug"},
 				{Key: "pipeline", Value: bson.A{
 					bson.D{
-						{"$project", bson.D{
-							{"_id", 0},
-							{"details", 1},
-							{"gmptimeline", 1},
+						{Key: "$project", Value: bson.D{
+							{Key: "_id", Value: 0},
+							{Key: "details", Value: 1},
+							{Key: "gmptimeline", Value: 1},
 						}},
 					},
 				}},
-				{"as", "ipo_details"},
+				{Key: "as", Value: "ipo_details"},
 			}},
 		},
 		// $addFields to handle no match case
 		{
-			{"$addFields", bson.D{
-				{"ipo_details", bson.D{
-					{"$cond", bson.A{
-						bson.D{{"$eq", bson.A{"$ipo_details", bson.A{}}}},
+			{Key: "$addFields", Value: bson.D{
+				{Key: "ipo_details", Value: bson.D{
+					{Key: "$cond", Value: bson.A{
+						bson.D{{Key: "$eq", Value: bson.A{"$ipo_details", bson.A{}}}},
 						nil,
-						bson.D{{"$arrayElemAt", bson.A{"$ipo_details", 0}}}, // In case there is a match, take the first element
+						bson.D{{Key: "$arrayElemAt", Value: bson.A{"$ipo_details", 0}}}, // In case there is a match, take the first element
 					}},
 				}},
 			}},
@@ -125,14 +125,14 @@ func FetchIPOWithDetails(collection *mongo.Collection) ([]AMIPOIndividual, error
 		// $addFields stage for details and gmpTimeline
 		{
 			{Key: "$addFields", Value: bson.D{
-				{"details", "$ipo_details.details"},
-				{"gmpTimeline", "$ipo_details.gmptimeline"},
+				{Key: "details", Value: "$ipo_details.details"},
+				{Key: "gmpTimeline", Value: "$ipo_details.gmptimeline"},
 			}},
 		},
 		// $project stage to remove ipo_details
 		{
-			{"$project", bson.D{
-				{"ipo_details", 0},
+			{Key: "$project", Value: bson.D{
+				{Key: "ipo_details", Value: 0},
 			}},
 		},
 	}

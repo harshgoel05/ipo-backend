@@ -43,7 +43,7 @@ func getIpoCalendarFromCrawl() []DMIPO {
 func fetchIpoDetailsAndInsertInDb(ipoList []DMIPO) []SMIPOIndividual {
 	var ipoDetailsFinal []SMIPOIndividual
 	for _, ipo := range ipoList {
-		ipoDetails := fetchIndividualIpoDetails(ipo.Link, ipo.GmpUrl)
+		ipoDetails := fetchIndividualIpoDetails(ipo.Link, *ipo.GmpUrl)
 		ipoDetailsResponse := SMIPOIndividual{
 			Slug:        ipo.Slug,
 			Details:     ipoDetails.Details,
